@@ -2899,11 +2899,17 @@ function LoginPage({onLogin}) {
   const [password,setPassword] = useState('');
   const [loading,setLoading]   = useState(false);
   const [error,setError]       = useState('');
+  const [serverReady,setServerReady] = useState(false);
   const [installPrompt,setInstallPrompt] = useState(()=>_pwaPrompt);
   const [installed,setInstalled]         = useState(
     window.matchMedia('(display-mode: standalone)').matches ||
     window.navigator.standalone === true
   );
+
+  // Wake-up ping: hit /health so Render free-tier is warm before user clicks Sign In
+  useEffect(()=>{
+    fetch(API_BASE+'/health').then(()=>setServerReady(true)).catch(()=>setServerReady(true));
+  },[]);
 
   useEffect(()=>{
     const onPrompt  = () => setInstallPrompt(_pwaPrompt);
@@ -2928,8 +2934,8 @@ function LoginPage({onLogin}) {
     setLoading(true); setError('');
     try {
       const res  = await fetch(API_BASE+'/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email,password})});
+      if(!res.ok){ const data=await res.json(); throw new Error(data.error||'Invalid credentials'); }
       const data = await res.json();
-      if(!res.ok) throw new Error(data.error||'Invalid credentials');
       localStorage.setItem('crm_token',      data.accessToken);
       localStorage.setItem('crm_user',       JSON.stringify({id:data.id,email:data.email,name:data.name,role:data.role,initials:data.avatarInitials}));
       localStorage.setItem('crm_login_time', String(Date.now()));
@@ -2976,9 +2982,15 @@ function LoginPage({onLogin}) {
               style={{width:'100%',background:'var(--card)',border:'1px solid var(--bdr)',borderRadius:10,padding:'10px 14px',color:'var(--white)',fontSize:14,outline:'none',fontFamily:'var(--sans)'}}/>
           </div>
           {error && <div style={{background:'var(--red-g)',border:'1px solid var(--red)',borderRadius:8,padding:'8px 12px',color:'var(--red)',fontSize:12}}>{error}</div>}
-          <button type="submit" disabled={loading}
-            style={{marginTop:4,background:'var(--blue)',color:'#fff',border:'none',borderRadius:10,padding:'12px',fontWeight:700,fontSize:14,cursor:loading?'wait':'pointer',fontFamily:'var(--sans)',transition:'opacity .2s',opacity:loading?.6:1}}>
-            {loading ? 'Signing in…' : 'Sign In'}
+          {!serverReady && !loading && (
+            <div style={{textAlign:'center',fontSize:11,color:'var(--muted)',display:'flex',alignItems:'center',justifyContent:'center',gap:6}}>
+              <span style={{width:7,height:7,borderRadius:'50%',background:'#f59e0b',display:'inline-block',animation:'pulse 1.2s ease-in-out infinite'}}></span>
+              Waking up server… (~30s on free plan)
+            </div>
+          )}
+          <button type="submit" disabled={loading||!serverReady}
+            style={{marginTop:4,background:'var(--blue)',color:'#fff',border:'none',borderRadius:10,padding:'12px',fontWeight:700,fontSize:14,cursor:(loading||!serverReady)?'wait':'pointer',fontFamily:'var(--sans)',transition:'opacity .2s',opacity:(loading||!serverReady)?.5:1}}>
+            {loading ? 'Signing in…' : !serverReady ? 'Waiting for server…' : 'Sign In'}
           </button>
         </form>
 
