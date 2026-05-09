@@ -1,0 +1,37 @@
+# Netlify Deployment — Barometer CRM Frontend
+# Docs: https://docs.netlify.com/configure-builds/file-based-configuration/
+#
+# HOW TO DEPLOY:
+#   1. Push this repo to GitHub
+#   2. Sign in at https://app.netlify.com → "Add new site" → "Import from Git"
+#   3. Set publish directory to: .  (root of repo)
+#   4. No build command needed
+#   5. After deploy, edit config.js → change apiBase to your Render backend URL
+#      e.g.  apiBase: 'https://barometer-crm-api.onrender.com'
+
+[build]
+  publish = "."          # serve from repo root
+  command = ""           # no build step
+
+[[redirects]]
+  from = "/*"
+  to = "/CFM.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "no-cache"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+[[headers]]
+  for = "/config.js"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-store, no-cache, must-revalidate"

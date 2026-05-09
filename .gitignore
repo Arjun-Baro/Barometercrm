@@ -1,0 +1,22 @@
+# ── Backend build output ─────────────────────────────────────
+barometer-crm-backend/target/
+
+# ── Environment secrets — NEVER commit these ─────────────────
+barometer-crm-backend/.env
+.env
+*.env
+
+# ── OS / editor junk ─────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/settings.json
+
+# ── Node (if any local tooling) ───────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ── Java ─────────────────────────────────────────────────────
+*.class
+*.jar
+hs_err_pid*
