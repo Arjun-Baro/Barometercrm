@@ -16,8 +16,6 @@ services:
   - type: web
     name: barometer-crm-api
     runtime: docker
-    dockerfilePath: ./barometer-crm-backend/Dockerfile
-    dockerContext: ./barometer-crm-backend
     plan: free                     # upgrade to "starter" for always-on
     healthCheckPath: /health
     envVars:
