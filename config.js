@@ -10,5 +10,7 @@
  * (e.g. Nginx proxy), set apiBase to '' (empty string).
  */
 window.CRM_CONFIG = {
-  apiBase: 'http://localhost:8080'
+  // PRODUCTION: 'https://barometer-crm-api.onrender.com'
+  // LOCAL DEV:  'http://localhost:8080'
+  apiBase: 'https://barometer-crm-api.onrender.com'
 };

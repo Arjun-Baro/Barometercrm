@@ -1,15 +1,18 @@
 # Render Deployment — Barometer CRM
 # Docs: https://render.com/docs/yaml-spec
 #
-# HOW TO DEPLOY:
-#   1. Push this repo to GitHub
-#   2. Sign in at https://render.com → New → "Blueprint"
-#   3. Point it at your repo — Render reads this file automatically
-#   4. Fill in the environment variable values in the Render dashboard
-#      (they're marked as "sync: false" below, so Render prompts you)
+# HOW TO DEPLOY (Blueprint):
+#   1. Push this repo to GitHub (done)
+#   2. Sign in at https://render.com → New → Blueprint
+#   3. Connect the repo — Render reads this file automatically
+#   4. Fill in the secret env vars in the Render dashboard when prompted
+#
+# OR deploy manually (what you're doing now):
+#   Backend → New Web Service  → Language: Docker, Root Dir: barometer-crm-backend
+#   Frontend → New Static Site → Root Dir: (blank), Publish Dir: .
 
 services:
-  # ── Backend: Spring Boot API ──────────────────────────────
+  # ── Backend: Spring Boot API (Docker) ─────────────────────
   - type: web
     name: barometer-crm-api
     runtime: docker
@@ -18,14 +21,12 @@ services:
     plan: free                     # upgrade to "starter" for always-on
     healthCheckPath: /health
     envVars:
-      - key: SERVER_PORT
-        value: "8080"
       - key: MONGODB_URI
-        sync: false                # ← paste your Atlas URI in Render dashboard
+        sync: false                # ← paste Atlas URI in Render dashboard
       - key: JWT_SECRET
         sync: false                # ← paste a 64-char random string
       - key: CLAUDE_API_KEY
-        sync: false                # ← paste your Anthropic API key
+        sync: false                # ← paste Anthropic API key
       - key: CLAUDE_MODEL
         value: claude-haiku-4-5-20251001
       - key: VAPID_PUBLIC_KEY
@@ -33,22 +34,23 @@ services:
       - key: VAPID_PRIVATE_KEY
         sync: false
       - key: CORS_ORIGINS
-        sync: false                # ← paste your Netlify URL e.g. https://barometer-crm.netlify.app
+        value: https://barometer-crm-frontend.onrender.com
 
-  # ── Frontend: Static Site (CFM.html) ─────────────────────
-  - type: web
+  # ── Frontend: Static Site (CFM.html) ──────────────────────
+  - type: static
     name: barometer-crm-frontend
-    runtime: static
-    staticPublishPath: .           # serve from workspace root
     buildCommand: ""               # no build step needed
-    plan: free
+    staticPublishPath: .           # serve from repo root
     headers:
       - path: /*
         name: Cache-Control
-        value: no-cache
+        value: no-cache, no-store, must-revalidate
       - path: /config.js
         name: Cache-Control
-        value: no-store, no-cache, must-revalidate
+        value: no-store, no-cache, must-revalidate, max-age=0
+      - path: /sw.js
+        name: Cache-Control
+        value: no-store, no-cache, must-revalidate, max-age=0
     routes:
       - type: rewrite
         source: /*
