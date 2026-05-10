@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="theme-color" content="#0B0E1A"/>
 <title>Barometer CRM</title>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.development.min.js"></script>
@@ -33,6 +37,675 @@ html,body,#root{height:100%;font-family:var(--sans);background:var(--bg);color:v
 input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.4)}
 input[type=time]::-webkit-calendar-picker-indicator{filter:invert(.4)}
 button{font-family:var(--sans)}
+
+/* Hide hamburger button on desktop (>=768px) */
+@media (min-width: 768px) {
+  .hamburger-btn {
+    display: none !important;
+  }
+  .sidebar-backdrop {
+    display: none !important;
+  }
+}
+
+/* Hide hamburger button on desktop */
+@media (min-width: 768px) {
+  .hamburger-btn {
+    display: none !important;
+  }
+  .sidebar-backdrop {
+    display: none !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════════
+   MOBILE RESPONSIVE — MAX 767px
+   All mobile overrides in one place
+   Desktop (≥768px) is completely untouched
+═══════════════════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 767px) {
+  /* Force single column grid */
+  div[style*="gridTemplateColumns: \"190px 1fr\""],
+  div[style*="display: grid"] {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  body,
+  html {
+    width: 100% !important;
+    overflow: visible !important;
+  }
+
+  #root {
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    width: 100% !important;
+  }
+
+  /* Global rules */
+  * { touch-action: manipulation; }
+  input,select,textarea { font-size: 16px; }
+  button,a { user-select: none; }
+
+  /* ─────────────────────────────────────────────────────────────
+     2. SIDEBAR / DRAWER
+  ─────────────────────────────────────────────────────────────── */
+  aside {
+    position: fixed !important;
+    left: 0 !important;
+    top: 0 !important;
+    right: auto !important;
+    bottom: auto !important;
+    height: 100dvh !important;
+    width: 280px !important;
+    z-index: 250 !important;
+    transform: translateX(-100%) !important;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    box-shadow: 4px 0 24px rgba(0,0,0,0.5) !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+    border-right: none !important;
+    border: none !important;
+    padding: 22px 0 !important;
+    background: var(--surf) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    margin: 0 !important;
+    max-height: 100% !important;
+    min-width: auto !important;
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
+  aside.sidebar-open {
+    transform: translateX(0) !important;
+  }
+
+  aside > div {
+    padding: 0 10px !important;
+  }
+
+  aside button {
+    min-height: 48px !important;
+    user-select: none;
+  }
+
+  /* Sidebar backdrop overlay */
+  .sidebar-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    background: rgba(0,0,0,0.65) !important;
+    backdrop-filter: blur(3px) !important;
+    z-index: 240 !important;
+    animation: fadeIn 0.2s ease !important;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     3. TOP BAR / HEADER & HAMBURGER
+  ─────────────────────────────────────────────────────────────── */
+  .hamburger-btn {
+    position: fixed !important;
+    top: 12px !important;
+    left: 12px !important;
+    z-index: 301 !important;
+    width: 40px !important;
+    height: 40px !important;
+    min-width: 40px !important;
+    min-height: 40px !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+    background: var(--card) !important;
+    border: 1px solid var(--bdr) !important;
+    cursor: pointer !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 20px !important;
+    line-height: 1 !important;
+    color: var(--body) !important;
+    font-weight: 700 !important;
+    transition: all 0.15s ease !important;
+    font-family: var(--sans) !important;
+  }
+
+  .hamburger-btn:hover {
+    background: var(--surf) !important;
+  }
+
+  .hamburger-btn:active {
+    opacity: 0.7 !important;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     4. MAIN CONTENT AREA
+  ─────────────────────────────────────────────────────────────── */
+  main {
+    position: relative !important;
+    width: 100% !important;
+    min-height: 100vh !important;
+    padding: 16px !important;
+    padding-bottom: 80px !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    display: flex !important;
+    flex-direction: column !important;
+    z-index: 100 !important;
+    background: var(--bg) !important;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     5. STAT CARDS
+  ─────────────────────────────────────────────────────────────── */
+  div[style*="display: grid"] [style*="gridTemplateColumns"] {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Stat cards grid responsive */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 12px !important;
+    border-radius: 10px;
+  }
+
+  .stat-card-value {
+    font-size: 24px !important;
+  }
+
+  .stat-card-label {
+    font-size: 10px !important;
+    letter-spacing: 0.05em;
+  }
+
+  .stat-card-sub {
+    font-size: 9px !important;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     6. TAB BAR / TABS
+  ─────────────────────────────────────────────────────────────── */
+  div[style*="display: flex"][style*="gap"] [style*="whiteSpace: nowrap"],
+  button[style*="whiteSpace: nowrap"] {
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .tab-bar {
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    scroll-behavior: smooth;
+    margin: 0 -16px;
+    padding: 8px 16px;
+  }
+
+  .tab-bar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tab-bar button {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 44px;
+    padding: 8px 16px;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     7. BOTTOM NAVIGATION
+  ─────────────────────────────────────────────────────────────── */
+  .bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: var(--surf);
+    border-top: 1px solid var(--bdr);
+    display: flex;
+    justify-content: space-around;
+    z-index: 200;
+  }
+
+  .bottom-nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    height: 60px;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 9px;
+    border: none;
+    background: transparent;
+    border-top: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: var(--sans);
+  }
+
+  .bottom-nav-item.active {
+    color: var(--blue);
+    border-top-color: var(--blue);
+  }
+
+  .bottom-nav-item:active {
+    opacity: 0.7;
+  }
+
+  .bottom-nav-icon {
+    font-size: 18px;
+    margin-bottom: 2px;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     8. SEARCH & FILTER ROW
+  ─────────────────────────────────────────────────────────────── */
+  .filter-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .filter-row input,
+  .filter-row select {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .filter-row-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .filter-row-buttons button {
+    width: 100%;
+    min-height: 40px;
+    font-size: 12px;
+    padding: 10px 12px;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     9. LEAD CARDS / LIST VIEW
+  ─────────────────────────────────────────────────────────────── */
+  .lead-card {
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+  .lead-card-name {
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+
+  .lead-card-meta {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .lead-card-status {
+    font-size: 11px;
+    margin-bottom: 8px;
+  }
+
+  .lead-card-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .lead-card-button {
+    width: 100%;
+    min-height: 36px;
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  /* Hide table view toggle, force card view on mobile */
+  button[style*="Table"] {
+    display: none;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     10. LEAD DETAIL SLIDE PANEL
+  ─────────────────────────────────────────────────────────────── */
+  .lead-detail-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100dvh;
+    background: var(--card);
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    z-index: 300;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .lead-detail-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--card);
+    border-bottom: 1px solid var(--bdr);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 44px;
+  }
+
+  .lead-detail-close-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: none;
+    border: 1px solid var(--bdr);
+    border-radius: 6px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  .lead-detail-content {
+    padding: 16px;
+    padding-bottom: 80px;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     11. MODALS / FORMS
+  ─────────────────────────────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 400;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+    padding: 0;
+    z-index: 400;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .modal-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--bdr);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 44px;
+    background: var(--card);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  .modal-header span:first-child {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .modal-close-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--bdr);
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--muted);
+  }
+
+  .modal-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 16px;
+    padding-bottom: 60px;
+  }
+
+  .modal input,
+  .modal select,
+  .modal textarea {
+    width: 100%;
+    font-size: 16px;
+    min-height: 44px;
+  }
+
+  .form-field {
+    margin-bottom: 12px;
+  }
+
+  .form-field label {
+    font-size: 12px;
+    display: block;
+    margin-bottom: 6px;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     12. CHATBOT PANEL
+  ─────────────────────────────────────────────────────────────── */
+  .chatbot-btn {
+    position: fixed;
+    bottom: 76px;
+    right: 16px;
+    width: 52px;
+    height: 52px;
+    border-radius: 26px;
+    z-index: 180;
+  }
+
+  .chatbot-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100vw;
+    height: 100dvh;
+    border-radius: 0;
+    z-index: 350;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .chatbot-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--bdr);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 44px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    flex-shrink: 0;
+  }
+
+  .chatbot-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chatbot-input-area {
+    position: sticky;
+    bottom: 0;
+    padding: 12px 16px;
+    border-top: 1px solid var(--bdr);
+    display: flex;
+    gap: 8px;
+    background: var(--card);
+    flex-shrink: 0;
+  }
+
+  .chatbot-input-area input {
+    flex: 1;
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .chatbot-input-area button {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     13. TYPOGRAPHY SCALING
+  ─────────────────────────────────────────────────────────────── */
+  h1,
+  div[style*="fontFamily: var(--serif)"][style*="fontSize: 20px"],
+  div[style*="fontFamily: var(--serif)"][style*="fontSize: 24px"],
+  div[style*="fontFamily: var(--serif)"][style*="fontSize: 26px"],
+  div[style*="fontFamily: var(--serif)"][style*="fontSize: 28px"],
+  div[style*="fontFamily: var(--serif)"][style*="fontSize: 32px"] {
+    font-size: 22px !important;
+  }
+
+  h2,
+  div[style*="fontSize: 16px"][style*="fontWeight: 700"] {
+    font-size: 16px !important;
+  }
+
+  body,
+  div,
+  p {
+    font-size: 13px !important;
+  }
+
+  div[style*="fontSize: 11px"],
+  div[style*="fontSize: 10px"] {
+    font-size: 11px !important;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     14. BUTTON & TAP TARGETS
+  ─────────────────────────────────────────────────────────────── */
+  button {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+  }
+
+  a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  /* ─────────────────────────────────────────────────────────────
+     15. SCROLLING IMPROVEMENTS
+  ─────────────────────────────────────────────────────────────── */
+  main,
+  aside,
+  .modal-content,
+  .chatbot-content {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+
+  /* Hide desktop-only elements */
+  div[style*="position: sticky"][style*="width: 280px"] {
+    display: none;
+  }
+
+  /* Make sure sidebar on mobile is visible when sidebarOpen */
+  aside[data-mobile-open="true"] {
+    transform: translateX(0);
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   HOVER STATES DISABLED ON TOUCH DEVICES
+   ─────────────────────────────────────────────────────────────── */
+@media (hover: none) {
+  button:hover {
+    opacity: 1;
+  }
+
+  a:hover {
+    opacity: 1;
+  }
+
+  div[role="button"]:hover {
+    opacity: 1;
+  }
+
+  button:active,
+  a:active,
+  div[role="button"]:active {
+    opacity: 0.7;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   EXTRA SMALL SCREENS (< 380px)
+   ─────────────────────────────────────────────────────────────── */
+@media (max-width: 380px) {
+  .filter-row-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .lead-card-buttons {
+    flex-direction: column;
+  }
+
+  main {
+    padding: 12px;
+    padding-bottom: 70px;
+  }
+
+  .hamburger-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 18px;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -3321,6 +3994,7 @@ function App() {
   const [renewalNotifDismissed,setRenewalNotifDismissed] = useState([]);
   const [clientBulkOpen,setClientBulkOpen]       = useState(false);
   const [reminderAlerts,setReminderAlerts]        = useState([]);
+  const [sidebarOpen,setSidebarOpen]             = useState(false);
 
   // ── FETCH LEADS FROM BACKEND ──────────────────────
   useEffect(()=>{
@@ -3467,8 +4141,14 @@ function App() {
   return (
     <div style={{display:"grid",gridTemplateColumns:"190px 1fr",minHeight:"100vh",background:"var(--bg)"}}>
 
+      {/* ── HAMBURGER BUTTON (Mobile Only) ── */}
+      <button className="hamburger-btn" onClick={()=>setSidebarOpen(!sidebarOpen)}>≡</button>
+
+      {/* ── SIDEBAR BACKDROP (Mobile Only) ── */}
+      {sidebarOpen && <div className="sidebar-backdrop" onClick={()=>setSidebarOpen(false)}/>}
+
       {/* ── SIDEBAR ── */}
-      <aside style={{background:"var(--surf)",borderRight:"1px solid var(--bdr)",display:"flex",flexDirection:"column",padding:"22px 0",position:"sticky",top:0,height:"100vh",overflowY:"auto"}}>
+      <aside className={sidebarOpen?"sidebar-open":""} style={{background:"var(--surf)",borderRight:"1px solid var(--bdr)",display:"flex",flexDirection:"column",padding:"22px 0",position:"sticky",top:0,height:"100vh",overflowY:"auto"}}>
         <div style={{padding:"0 18px 20px",borderBottom:"1px solid var(--bdr)",marginBottom:16}}>
           <div style={{fontFamily:"var(--serif)",fontSize:17,fontWeight:800,color:"var(--white)",letterSpacing:".02em"}}>Barometer<span style={{color:"var(--blue)"}}>.</span></div>
           <div style={{fontSize:9,color:"var(--muted)",letterSpacing:".1em",textTransform:"uppercase",marginTop:3}}>Sales CRM</div>
@@ -3481,7 +4161,7 @@ function App() {
             {id:"notes",      icon:"📝", label:"Notes & Reminders",  badge:0},
             {id:"settings",   icon:"⚙️", label:"Settings",           badge:0},
           ].map(n=>(
-            <button key={n.id} onClick={()=>setView(n.id)}
+            <button key={n.id} onClick={()=>{setView(n.id);setSidebarOpen(false);}}
               style={{display:"flex",alignItems:"center",gap:10,padding:"10px 12px",borderRadius:8,cursor:"pointer",width:"100%",textAlign:"left",border:"none",fontSize:13,fontWeight:400,marginBottom:4,
                 background:view===n.id?"var(--blue-g)":"transparent",
                 color:view===n.id?"var(--sky)":"var(--muted)",transition:"all .18s",fontFamily:"var(--sans)"}}>
