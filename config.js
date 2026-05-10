@@ -10,8 +10,6 @@
  * (e.g. Nginx proxy), set apiBase to '' (empty string).
  */
 window.CRM_CONFIG = {
-  // PRODUCTION (Render): Backend deployed on Render
-  apiBase: 'https://barometercrm.onrender.com'
-  // LOCAL DEV:  'http://127.0.0.1:8080' (must match the IP of the frontend server)
-  // apiBase: 'http://127.0.0.1:8080'
+  // PRODUCTION: Backend on separate Render service
+  apiBase: 'https://barometer-crm-4z83.onrender.com'
 };
